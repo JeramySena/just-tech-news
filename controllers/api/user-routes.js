@@ -27,6 +27,14 @@ router.get("/:id", (req, res) => {
         attributes: ['id', 'title', 'post_url', 'created_at']
       },
       {
+        model: Comment,
+        attributes: ['id', 'comment_text', 'created_at'],
+        include: {
+          model: Post,
+          attributes: ['title']
+        }
+      },
+      {
         model: Post,
         attributes: ['title'],
         through: Vote,
@@ -55,11 +63,13 @@ router.post("/", (req, res) => {
     email: req.body.email,
     password: req.body.password,
   })
-    .then((dbUserData) => res.json(dbUserData))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+  .then(dbUserData => {
+    res.json(dbUserData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 router.post('/login', (req, res) => {
